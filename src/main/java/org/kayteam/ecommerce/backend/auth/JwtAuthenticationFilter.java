@@ -1,13 +1,13 @@
-package org.kayteam.licenses.auth;
+package org.kayteam.ecommerce.backend.auth;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
-import org.kayteam.licenses.entities.TokenJWT;
-import org.kayteam.licenses.exceptions.ExpiredTokenException;
-import org.kayteam.licenses.services.TokenService;
+import org.kayteam.ecommerce.backend.exceptions.ExpiredTokenException;
+import org.kayteam.ecommerce.backend.models.TokenJWT;
+import org.kayteam.ecommerce.backend.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,4 +1,4 @@
-package org.kayteam.licenses.exceptions;
+package org.kayteam.ecommerce.backend.exceptions;
 
 public class StorageException extends RuntimeException {
 

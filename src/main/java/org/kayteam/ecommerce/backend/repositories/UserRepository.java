@@ -1,6 +1,6 @@
-package org.kayteam.licenses.repositories;
+package org.kayteam.ecommerce.backend.repositories;
 
-import org.kayteam.licenses.entities.User;
+import org.kayteam.ecommerce.backend.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,9 +1,9 @@
-package org.kayteam.licenses.auth;
+package org.kayteam.ecommerce.backend.auth;
 
-import org.kayteam.licenses.entities.Authority;
-import org.kayteam.licenses.entities.TokenJWT;
-import org.kayteam.licenses.exceptions.ExpiredTokenException;
-import org.kayteam.licenses.services.TokenService;
+import org.kayteam.ecommerce.backend.exceptions.ExpiredTokenException;
+import org.kayteam.ecommerce.backend.models.Authority;
+import org.kayteam.ecommerce.backend.models.TokenJWT;
+import org.kayteam.ecommerce.backend.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -44,56 +45,54 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf()
-                .disable()
-                .authorizeHttpRequests()
-                .requestMatchers(jwtAuthFilter.getUnauthenticatedPaths().toArray(new String[]{})).permitAll()
-                .requestMatchers("/admin/**").hasAnyRole(staffRoles)
-                .anyRequest().authenticated()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
+                            .requestMatchers(jwtAuthFilter.getUnauthenticatedPaths().toArray(new String[]{})).permitAll()
+                            .requestMatchers("/admin/**").hasAnyRole(staffRoles)
+                            .anyRequest().authenticated()
+                )
+                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .logout()
-                .logoutUrl("/auth/sign-out")
-                .addLogoutHandler((request, response, authentication) -> {
-                    final String authHeader = request.getHeader("Authorization");
-                    final String jwt;
+                .logout(httpSecurityLogoutConfigurer -> httpSecurityLogoutConfigurer
+                        .logoutUrl("/auth/sign-out")
+                        .addLogoutHandler((request, response, authentication) -> {
+                            final String authHeader = request.getHeader("Authorization");
+                            final String jwt;
 
-                    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                        return;
-                    }
+                            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                                return;
+                            }
 
-                    jwt = authHeader.substring(7);
+                            jwt = authHeader.substring(7);
 
-                    TokenJWT storedToken = tokenService.findByToken(jwt);
+                            TokenJWT storedToken = tokenService.findByToken(jwt);
 
-                    if (storedToken != null) {
-                        if (jwtService.isTokenExpired(jwt) || storedToken.getRevoked()) {
-                            throw new ExpiredTokenException();
-                        }
+                            if (storedToken != null) {
+                                if (jwtService.isTokenExpired(jwt) || storedToken.getRevoked()) {
+                                    throw new ExpiredTokenException();
+                                }
 
-                        storedToken.setRevoked(true);
-                        tokenService.save(storedToken);
+                                storedToken.setRevoked(true);
+                                tokenService.save(storedToken);
 
-                        SecurityContextHolder.clearContext();
-                    }
-                })
-                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
-                .and()
-                .cors()
-                .configurationSource(request -> {
-                    CorsConfiguration corsConfiguration = new CorsConfiguration();
-                    corsConfiguration.addAllowedOriginPattern("*");
-                    corsConfiguration.addAllowedHeader("*");
-                    corsConfiguration.addAllowedMethod("*");
-                    corsConfiguration.setAllowCredentials(true);
-                    return corsConfiguration;
-                });
-
-        return http.build();
+                                SecurityContextHolder.clearContext();
+                            }
+                        })
+                        .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+                )
+                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer
+                        .configurationSource(request -> {
+                            CorsConfiguration corsConfiguration = new CorsConfiguration();
+                            corsConfiguration.addAllowedOriginPattern("*");
+                            corsConfiguration.addAllowedHeader("*");
+                            corsConfiguration.addAllowedMethod("*");
+                            corsConfiguration.setAllowCredentials(true);
+                            return corsConfiguration;
+                        })
+                ).build();
     }
 }

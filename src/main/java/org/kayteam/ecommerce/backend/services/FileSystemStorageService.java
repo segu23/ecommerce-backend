@@ -1,4 +1,4 @@
-package org.kayteam.licenses.services;
+package org.kayteam.ecommerce.backend.services;
 
 import org.kayteam.licenses.exceptions.StorageException;
 import org.kayteam.licenses.exceptions.StorageFileNotFoundException;

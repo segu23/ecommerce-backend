@@ -1,10 +1,11 @@
-package org.kayteam.licenses.entities;
+package org.kayteam.ecommerce.backend.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,6 +31,10 @@ public class User implements UserDetails {
     @Setter
     private String email;
 
+    public String firstName;
+
+    public String lastName;
+
     @JsonIgnore
     @Setter
     private String password;
@@ -52,6 +57,12 @@ public class User implements UserDetails {
     @Getter
     @Setter
     private String secretTwoFactorCode;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @UpdateTimestamp
+    @Getter
+    private Date updateDate;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

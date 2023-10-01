@@ -1,7 +1,7 @@
-package org.kayteam.licenses.services;
+package org.kayteam.ecommerce.backend.services;
 
-import org.kayteam.licenses.entities.User;
-import org.kayteam.licenses.repositories.UserRepository;
+import org.kayteam.ecommerce.backend.models.User;
+import org.kayteam.ecommerce.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

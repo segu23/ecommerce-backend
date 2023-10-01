@@ -1,4 +1,4 @@
-package org.kayteam.licenses.entities;
+package org.kayteam.ecommerce.backend.models;
 
 public enum Authority {
 

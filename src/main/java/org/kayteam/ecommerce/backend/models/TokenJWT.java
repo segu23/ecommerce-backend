@@ -1,7 +1,12 @@
-package org.kayteam.licenses.entities;
+package org.kayteam.ecommerce.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
 
 @Data
 @Entity
@@ -24,5 +29,11 @@ public class TokenJWT {
     private Boolean revoked = false;
 
     @ManyToOne
-    private User relatedUser;
+    private User user;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @CreationTimestamp
+    @Getter
+    private Date creationDate;
 }

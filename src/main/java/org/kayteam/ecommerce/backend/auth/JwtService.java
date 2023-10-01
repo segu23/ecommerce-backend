@@ -1,4 +1,4 @@
-package org.kayteam.licenses.auth;
+package org.kayteam.ecommerce.backend.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

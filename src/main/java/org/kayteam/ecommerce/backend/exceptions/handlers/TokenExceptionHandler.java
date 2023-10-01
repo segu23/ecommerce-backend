@@ -1,4 +1,4 @@
-package org.kayteam.licenses.exceptions.handlers;
+package org.kayteam.ecommerce.backend.exceptions.handlers;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;

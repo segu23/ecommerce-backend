@@ -1,4 +1,4 @@
-package org.kayteam.licenses.models;
+package org.kayteam.ecommerce.backend.dto;
 
 import lombok.Data;
 
